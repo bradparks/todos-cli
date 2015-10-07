@@ -119,15 +119,8 @@ Run less --help for more information on how to use vorpal-less.
 
 ## Stuff to implement before first release ##
 
-- TODO man command for displaying this readme
-- TODO depend on todos-js, change require calls to absolute
-- TODO package.json updates
-- TODO write the readme
-- TODO split code into more files
-- TODO help --todo
-- TODO help --cwt
-- TODO chalk, markdown, pretty output
-- TODO rework all command descriptions and misc output
-- TODO include vorpal-less and maybe other extensions
+- TODO all commands
 - TODO save on exit
 - TODO autocompletion for todo-paths
+- TODO depend on todos-js, change require calls to absolute
+- TODO package.json updates

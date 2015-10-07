@@ -173,8 +173,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
     if foundFile
       vorpal.exec 'ls'
     else
-      # TODO prettify using marked-terminal, this is the first impression...
-      vorpal.session.log 'Welcome to todos-cli.'
       vorpal.session.log ''
-      vorpal.session.log 'Type \'help\' for a quick overview of all available commands.'
-      vorpal.session.log 'Or type \'man | less\' for an explanation of the core concepts.'
+      vorpal.session.log marked '# Welcome to todos-cli #'
+      vorpal.session.log ''
+      vorpal.session.log marked 'Run `help` for a quick overview of all available commands.\nOr type `man | less` for an explanation of the core concepts.'
