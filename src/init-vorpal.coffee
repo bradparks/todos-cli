@@ -3,6 +3,7 @@ Path = require '../../todos-js/lib/path'
 
 marked = require 'marked'
 TerminalRenderer = require 'marked-terminal'
+less = require 'vorpal-less'
 
 fs = require 'fs'
 
@@ -164,7 +165,9 @@ module.exports = (vorpal, controller, program, foundFile) ->
 
   marked.setOptions {renderer: new TerminalRenderer()}
 
-  vorpal.updateDelimiter().show()
+  vorpal.use(less)
+  .updateDelimiter()
+  .show()
 
   unless program.noWelcome
     if foundFile
