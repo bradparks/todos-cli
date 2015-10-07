@@ -1,5 +1,10 @@
 Todo = require '../../todos-js/lib/todo'
-Path = require '../../todos-js/src/path'
+Path = require '../../todos-js/lib/path'
+
+marked = require 'marked'
+TerminalRenderer = require 'marked-terminal'
+
+fs = require 'fs'
 
 module.exports = (vorpal, controller, program, foundFile) ->
   vorpal.controller = controller
@@ -144,14 +149,29 @@ module.exports = (vorpal, controller, program, foundFile) ->
       controller.setDone controller.resolvePath(args.todo), done
       cb()
 
+  vorpal.command 'man'
+    .description 'show the usage manual for todos-cli'
+    .action (args, cb) ->
+      output = ''
+
+      try
+        @.log marked fs.readFileSync("#{__dirname}/../README.md").toString()
+      catch error
+        @.log "Could not find README.md at #{__dirname}/../README.md"
+        @.log error
+
+      cb()
+
+  marked.setOptions {renderer: new TerminalRenderer()}
+
   vorpal.updateDelimiter().show()
+
   unless program.noWelcome
     if foundFile
-      # TODO: ls
       vorpal.exec 'ls'
     else
       # TODO prettify using marked-terminal, this is the first impression...
       vorpal.session.log 'Welcome to todos-cli.'
       vorpal.session.log ''
       vorpal.session.log 'Type \'help\' for a quick overview of all available commands.'
-      vorpal.session.log 'Or type \'man\' for an explanation of the core concepts.'
+      vorpal.session.log 'Or type \'man | less\' for an explanation of the core concepts.'

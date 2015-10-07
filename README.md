@@ -84,9 +84,17 @@ Run `todos` to start an [immersive session](https://github.com/dthree/vorpal#wha
 - file
 - save
 
-## Miscellaneous ##
+### Miscellaneous ###
 - help
-- man
+
+- - -
+
+`man`
+
+
+
+- - -
+
 - |  less
 - arguments and options for running todos
 
