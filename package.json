@@ -1,0 +1,38 @@
+{
+  "name": "todos-cli",
+  "version": "0.0.0",
+  "description": "CLI for managing hierarchical todo lists. UI for todos-js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine-node spec --coffee --matchall",
+    "pretest": "npm run compile",
+    "prepublish": "npm run compile",
+    "compile": "coffee --compile --output lib/ src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AljoschaMeyer/todos-cli.git"
+  },
+  "keywords": [
+    "todo",
+    "todos",
+    "cli",
+    "task",
+    "management"
+  ],
+  "author": "Aljoscha Meyer <aljoscha.meyer@uni-oldenburg.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AljoschaMeyer/todos-js/issues"
+  },
+  "homepage": "https://github.com/AljoschaMeyer/todos-js#readme",
+  "dependencies": {
+    "commander": "^2.8.1",
+    "marked": "^0.3.5",
+    "marked-terminal": "^1.6.1",
+    "vorpal": "^1.1.10"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.10.0"
+  }
+}
