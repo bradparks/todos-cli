@@ -78,15 +78,18 @@ When giving a path to another todo, that todo is the parent for the new one.
 Prompts for the description, unless it is given via the `-d` option.
 Descriptions are rendered as [markdown](https://daringfireball.net/projects/markdown/).
 
+The default status for a new todo is pending.
+To create a todo as already done, pass the `-s` flag.
+
 The new todo is added as the last child, unless an index is specified via the `-i` option.
 
 Options:
-
+```
   --help                           output usage information
   -d, --description <description>  set description without prompting.
   -s, --done                       sets the status to done, instead of pending.
   -i, --index <index>              index among the todo's siblings
-
+```
 - - -
 
 #### Removing Todos ####
@@ -104,10 +107,10 @@ When deleting the cwt, the parent of the old cwt becomes the new cwt.
 When deleting the root, a new, empty root is created.
 
 Options:
-
+```
   --help           output usage information
   -r, --recursive  remove children without prompting
-
+```
 - - -
 
 - move
@@ -145,15 +148,19 @@ Options:
 
 - - -
 
+#### Usage Manual ####
+
 `man`
 
 Show the readme.md for the module in the terminal.
 
 - - -
 
+#### Viewing Less Output ####
+
 ` | less`
 
-todos-cli comes with the (vorpal-less)[https://github.com/vorpaljs/vorpal-less] extension.
+todos-cli comes with the [vorpal-less](https://github.com/vorpaljs/vorpal-less) extension.
 Just write ' | less' behind a command to view the output in less mode.
 Run less --help for more information on how to use vorpal-less.
 
