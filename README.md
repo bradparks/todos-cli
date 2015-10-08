@@ -51,9 +51,9 @@ A simple example todo-tree:
 As you can see, using `..` to refer to the parent *todo* is supported, so is `.` to explicitly refer to the current *todo*.
 Autocompletion using tab works as well.
 
-If the name of a todo contains a `/` or `\\`, it must be escaped as `\/` or `\\` in the path.
+If the name of a todo contains a `/` or `\`, it must be escaped as `\/` or `\\` in the path.
 
-All commands which take a [todo] as an argument expect such a path.
+All commands which take a `[todo]` as an argument expect such a path.
 
 The commands for navigating the todo tree are analogues to the usual terminal commands:
 `pwd` to print the *current working todo*, `cd` to change it, and `ls` to show the todos.
@@ -64,7 +64,29 @@ Run `todos` to start an [immersive session](https://github.com/dthree/vorpal#wha
 
 ### Manipulating Todos ###
 
-- create new
+- - -
+
+`mk [options] <name> [todo]`
+
+Alias: `add` | `new` | `create` | `make`
+
+Creates a new todo, adding it as a child of the current working todo.
+When giving a path to another todo, that todo is the parent for the new one.
+
+Prompts for the description, unless it is given via the `-d` option.
+Descriptions are rendered as [markdown](https://daringfireball.net/projects/markdown/).
+
+The new todo is added as the last child, unless an index is specified via the `-i` option.
+
+Options:
+
+  --help                           output usage information
+  -d, --description <description>  set description without prompting.
+  -s, --done                       sets the status to done, instead of pending.
+  -i, --index <index>              index among the todo's siblings
+
+- - -
+
 - delete
 - move
 - copy
@@ -124,3 +146,5 @@ Run less --help for more information on how to use vorpal-less.
 - TODO autocompletion for todo-paths
 - TODO depend on todos-js, change require calls to absolute
 - TODO package.json updates
+- TODO handle errors on save
+- TODO render descriptions as md

@@ -4,6 +4,8 @@ Path = require '../../todos-js/lib/path'
 marked = require 'marked'
 TerminalRenderer = require 'marked-terminal'
 less = require 'vorpal-less'
+parseInt = require 'parse-int'
+chalk = require 'chalk'
 
 fs = require 'fs'
 
@@ -18,6 +20,60 @@ module.exports = (vorpal, controller, program, foundFile) ->
       cwtDisplayName = Path.deescape @controller.cwt.model.name
 
     return @delimiter "[todos #{cwtDisplayName}]"
+
+  error = (msg) ->
+    vorpal.session.log chalk.red msg
+
+  vorpal.command 'mk <name> [todo]'
+    .description 'make a new todo, as child of [todo]'
+    .alias 'add'
+    .alias 'new'
+    .alias 'create'
+    .alias 'make'
+    .option '-d, --description <description>', 'set description without prompting.'
+    .option '-s, --done', 'sets the status to done, instead of pending.'
+    .option '-i, --index <index>', 'index among the todo\'s siblings'
+    .action (args, cb) ->
+      if args.options.index?
+        index = parseInt args.options.index
+        unless index?
+          error "#{args.options.index} is not an integer"
+          return cb()
+        if index < 0
+          error "#{index} may not be below zero"
+          return cb()
+
+      name = Path.escape args.name
+      description = args.options.description
+      parent = controller.resolvePath (args.todo)
+
+      makeTodo = ->
+        todo = Todo name, description, args.options.done
+        try
+          controller.addChildAtIndex parent, todo, index
+        catch err
+          switch err.message
+            when 'Invalid index.'
+              error 'Index must be between zero and the number of siblings of the todo.'
+            when 'Operation would have resulted in siblings with the same name.'
+              error 'The name must be unique among the todo\'s siblings.'
+            else
+              error err
+              error err.message
+        finally
+          cb()
+
+      if description?
+        makeTodo()
+      else
+        question =
+          name: 'description'
+          message: 'Description: '
+          default: ''
+
+        @.prompt question, (answer) ->
+          description = answer.description
+          makeTodo()
 
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
@@ -85,28 +141,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
         @.log "#{prefix}#{node.model.description}"
         @.log "#{prefix}#{node.model.done}"
         @.log "#{prefix}#{node.model.dependencies}"
-
-      cb()
-
-  vorpal.command 'mk <name>'
-    .description 'Add a new todo as a child of the cwt'
-    .alias 'add'
-    .alias 'new'
-    .alias 'create'
-    .alias 'make'
-    .option '-d, --description <string>', 'Set description without prompting.'
-    .option '-s, --done', 'Sets the status to done, instead of pending.'
-    #.option '-n, --dependencies [todos...]', 'Add the given todos as dependencies. Will also add the new todo as a dependent of them.'
-    #.option '-a, --dependents [todos...]', 'Add the given todos as dependents. Will also add the new todo as a dependency of them.'
-    .option '-p, --parent <todo>', 'The parent todo to add this to.'
-    .option '-i, --index <integer>', 'Index among the todos siblings'
-    .action (args, cb) ->
-      unless args.description?
-        args.description = "Description of #{args.name}, yeah!"
-      parent = controller.resolvePath (args.parent)
-
-      todo = Todo args.name, args.options.description, args.options.done
-      controller.addChildAtIndex parent, todo, args.index
 
       cb()
 
