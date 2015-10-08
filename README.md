@@ -66,6 +66,8 @@ Run `todos` to start an [immersive session](https://github.com/dthree/vorpal#wha
 
 - - -
 
+#### Creating Todos ####
+
 `mk [options] <name> [todo]`
 
 Alias: `add` | `new` | `create` | `make`
@@ -87,7 +89,27 @@ Options:
 
 - - -
 
-- delete
+#### Removing Todos ####
+
+`rm [options] [todos...]`
+
+Alias: `remove` | `del` | `delete`
+
+Deletes either the current working todo, or any number of specified todos.
+
+Unless the `-r` flag is used, this asks for confirmation when deleting a parent todo.  
+Will always ask for confirmation before deleting the root todo.
+
+When deleting the cwt, the parent of the old cwt becomes the new cwt.  
+When deleting the root, a new, empty root is created.
+
+Options:
+
+  --help           output usage information
+  -r, --recursive  remove children without prompting
+
+- - -
+
 - move
 - copy
 - setIndex
@@ -148,3 +170,5 @@ Run less --help for more information on how to use vorpal-less.
 - TODO package.json updates
 - TODO handle errors on save
 - TODO render descriptions as md
+- TODO add --preserve-root to rm
+- TODO allow mk to create necessary parents

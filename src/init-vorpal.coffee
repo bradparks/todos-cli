@@ -24,6 +24,9 @@ module.exports = (vorpal, controller, program, foundFile) ->
   error = (msg) ->
     vorpal.session.log chalk.red msg
 
+  warn = (msg) ->
+    vorpal.session.log chalk.yellow msg
+
   vorpal.command 'mk <name> [todo]'
     .description 'make a new todo, as child of [todo]'
     .alias 'add'
@@ -74,6 +77,65 @@ module.exports = (vorpal, controller, program, foundFile) ->
         @.prompt question, (answer) ->
           description = answer.description
           makeTodo()
+
+  vorpal.command 'rm [todos...]'
+    .description 'delete todos'
+    .alias 'remove'
+    .alias 'del'
+    .alias 'delete'
+    .option '-r, --recursive', 'remove children without prompting'
+    .action (args, cb) ->
+      todos = []
+
+      if args.todos?
+        for t in args.todos
+          node = controller.resolvePath t
+          if node?
+            todos.push node
+          else
+            warn "skipping #{t}, that is not a valid path to a todo"
+
+      todos.push controller.cwt if todos.length is 0
+
+      questions = []
+      unless args.recursive
+        for todo in todos
+          if todo.children.length > 0
+            path = Path.renderPath todo
+            question =
+              name: "confirm#{path}"
+              message: "#{path} has child-todos. Delete anyways? (Y/n)"
+              default: true
+              todo: todo
+            questions.push question
+
+      for todo in todos
+        if todo is controller.root
+          rootQuestion =
+            name: 'deleteRoot'
+            message: 'You are about to delete the root-todo. This will delete everything and create a new, empty root. Continue anyways? (y/N)'
+            default: false
+            todo: todo
+          questions = [rootQuestion]
+
+      if questions.length is 0
+        for todoToDelete in todos
+          controller.dropNode todoToDelete
+
+        vorpal.updateDelimiter()
+        cb()
+      else
+        @.prompt questions, (answers) ->
+          for todoToDelete in todos
+            ans = answers["confirm#{Path.renderPath todoToDelete}"]
+            if ans?
+              unless ans is 'n' or ans is 'N' or ans is 'no' or ans is 'No' or ans is 'false'
+                controller.dropNode todoToDelete
+            else
+              controller.dropNode todoToDelete
+
+          vorpal.updateDelimiter()
+          cb()
 
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
@@ -148,12 +210,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
     .description 'move a todo to the given index among its siblings'
     .action (args, cb) ->
       controller.moveChildToIndex controller.resolvePath(args.todo), args.index
-      cb()
-
-  vorpal.command 'rm [todo]'
-    .description 'delete a todo'
-    .action (args, cb) ->
-      controller.dropNode controller.resolvePath args.todo
       cb()
 
   vorpal.command 'rn <name> [todo]'
