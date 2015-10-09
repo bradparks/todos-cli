@@ -95,7 +95,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
           else
             warn "skipping #{t}, that is not a valid path to a todo"
 
-      todos.push controller.cwt if todos.length is 0
+      todos.push controller.cwt if todos.length is 0 and not args.todos?
 
       questions = []
       unless args.recursive
@@ -112,7 +112,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
       for todo in todos
         if todo is controller.root
           rootQuestion =
-            name: 'deleteRoot'
+            name: "confirm#{Path.renderPath todo}"
             message: 'You are about to delete the root-todo. This will delete everything and create a new, empty root. Continue anyways? (y/N)'
             default: false
             todo: todo
@@ -129,7 +129,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
           for todoToDelete in todos
             ans = answers["confirm#{Path.renderPath todoToDelete}"]
             if ans?
-              unless ans is 'n' or ans is 'N' or ans is 'no' or ans is 'No' or ans is 'false'
+              unless ans is 'n' or ans is 'N' or ans is 'no' or ans is 'No' or ans is 'false' or ans is false
                 controller.dropNode todoToDelete
             else
               controller.dropNode todoToDelete
@@ -143,6 +143,10 @@ module.exports = (vorpal, controller, program, foundFile) ->
     .option '-r, --relative', 'add index to the current index'
     .action (args, cb) ->
       node = controller.resolvePath args.todo
+
+      unless node?
+        error "#{args.todo} is not a valid path to a todo"
+        return cb()
 
       if node is controller.root
         error 'Can not move the root.'
@@ -180,6 +184,11 @@ module.exports = (vorpal, controller, program, foundFile) ->
         cb()
 
       node = controller.resolvePath args.todo
+
+      unless node?
+        error "#{args.todo} is not a valid path to a todo"
+        return cb()
+
       if node is controller.root
         error 'Can not rename the root.'
         return cb()
@@ -201,6 +210,10 @@ module.exports = (vorpal, controller, program, foundFile) ->
     .action (args, cb) ->
       node = controller.resolvePath args.todo
 
+      unless node?
+        error "#{args.todo} is not a valid path to a todo"
+        return cb()
+
       if args.description?
         controller.setDescription node, args.description
         return cb()
@@ -217,13 +230,25 @@ module.exports = (vorpal, controller, program, foundFile) ->
   vorpal.command 'done [todo]'
     .description 'set the status to done'
     .action (args, cb) ->
-      controller.setDone controller.resolvePath(args.todo), true
+      node = controller.resolvePath args.todo
+
+      unless node?
+        error "#{args.todo} is not a valid path to a todo"
+        return cb()
+
+      controller.setDone node, true
       cb()
 
   vorpal.command 'pending [todo]'
     .description 'set the status to pending'
     .action (args, cb) ->
-      controller.setDone controller.resolvePath(args.todo), false
+      node = controller.resolvePath args.todo
+
+      unless node?
+        error "#{args.todo} is not a valid path to a todo"
+        return cb()
+
+      controller.setDone node, false
       cb()
 
   vorpal.command 'ad [todo] <dependency>'
@@ -233,6 +258,10 @@ module.exports = (vorpal, controller, program, foundFile) ->
     .action (args, cb) ->
       node = controller.resolvePath args.todo
       dep = controller.resolvePath args.dependency
+
+      unless node?
+        error "#{args.todo} is not a valid path to a todo"
+        return cb()
 
       unless dep?
         error "#{args.dependency} is not a valid path to a todo"
@@ -249,6 +278,15 @@ module.exports = (vorpal, controller, program, foundFile) ->
     .action (args, cb) ->
       node = controller.resolvePath args.todo
       dep = controller.resolvePath args.dependency
+
+      unless node?
+        error "#{args.todo} is not a valid path to a todo"
+        return cb()
+
+      unless dep?
+        error "#{args.dependency} is not a valid path to a todo"
+        return cb()
+
       controller.removeDependency node, dep
       cb()
 
@@ -259,6 +297,14 @@ module.exports = (vorpal, controller, program, foundFile) ->
     .action (args, cb) ->
       node = controller.resolvePath args.todo
       dep = controller.resolvePath args.dependency
+
+      unless node?
+        error "#{args.todo} is not a valid path to a todo"
+        return cb()
+
+      unless dep?
+        error "#{args.dependency} is not a valid path to a todo"
+        return cb()
 
       index = args.index
       index += node.model.dependencies.indexOf(Path.renderPath dep) if args.options.relative?
