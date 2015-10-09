@@ -178,8 +178,33 @@ Options:
 ```
 - - -
 
-- setDescription
-- setStatus
+#### Set Status ####
+`done [options] [todo]`
+
+Set the status of a given todo (or the current working todo if none is specified) to done.
+
+This will automatically set all children and dependencies to done as well.
+
+Options:
+```
+  --help  output usage information
+```
+
+- - -
+
+`pending [options] [todo]`
+
+Set the status of a given todo (or the current working todo if none is specified) to pending.
+
+This will automatically set all ancestors and dependents to pending as well.
+
+Options:
+```
+  --help  output usage information
+```
+
+- - -
+
 - addDependency
 - removeDependency
 - moveDependencyToIndex

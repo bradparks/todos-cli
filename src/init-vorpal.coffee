@@ -214,6 +214,18 @@ module.exports = (vorpal, controller, program, foundFile) ->
           controller.setDescription node, answer.description
           return cb()
 
+  vorpal.command 'done [todo]'
+    .description 'set the status to done'
+    .action (args, cb) ->
+      controller.setDone controller.resolvePath(args.todo), true
+      cb()
+
+  vorpal.command 'pending [todo]'
+    .description 'set the status to pending'
+    .action (args, cb) ->
+      controller.setDone controller.resolvePath(args.todo), false
+      cb()
+
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
       or prints the current savefile if no argument is given'
