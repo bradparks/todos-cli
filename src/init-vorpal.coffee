@@ -361,12 +361,16 @@ module.exports = (vorpal, controller, program, foundFile) ->
       cb()
 
   vorpal.command 'autosave [boolean]'
-    .description 'Set whether all changes to the todos should be saved immediately (true), or only when running save or exit (false). Prints the current setting if no boolean is passed.'
+    .description 'view autosave setting'
+    .option '--on', 'turn on autosave'
+    .option '--off', 'turn off autosave'
     .action (args, cb) ->
-      if args.boolean?
-        controller.autosave = args.boolean
-      else
-        @.log controller.autosave
+      newValue = true if args.options.on?
+      newValue = false if args.options.off?
+      if newValue?
+        controller.autosave = newValue
+
+      @.log controller.autosave
 
       cb()
 

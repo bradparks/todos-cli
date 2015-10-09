@@ -317,8 +317,23 @@ Options:
   --help  output usage information
 ```
 - - -
+#### Autosave ####
 
-- autosave
+`autosave [options] [boolean]`
+
+Prints whether autosave is enabled - which it is by default.
+Whenever the tree is changed and autosave is on, it is serialized to the savefile.
+Without autosave, you have to save manually using the `save` command.
+
+Passing `--on` will enable autosave, `--off` will disable it and takes precedence.
+
+Options:
+
+  --help  output usage information
+  --on   turn on autosave
+  --off  turn off autosave
+
+- - -
 
 ### Miscellaneous ###
 - help
@@ -349,7 +364,6 @@ Run `less --help` for more information on how to use vorpal-less.
 ## Stuff to implement before first release ##
 
 - TODO all commands
-- TODO save on exit
 - TODO autocompletion for todo-paths
 - TODO depend on todos-js, change require calls to absolute
 - TODO package.json updates
