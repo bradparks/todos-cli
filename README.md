@@ -286,8 +286,26 @@ Options:
 ```
 
 ### Persistence ###
+
+- - -
+
+#### Set Savefile ####
+
+`file [options] [path]`
+
+Sets the savefile to the given path.
+If called without argument, prints the current savefile path instead.
+
+Will perform a save to the new file if the `-s` flag is passed.
+
+Options:
+```
+  --help      output usage information
+  -s, --save  immediately save to that file
+```
+- - -
+
 - autosave
-- file
 - save
 
 ### Miscellaneous ###

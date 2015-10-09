@@ -342,8 +342,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
       cb()
 
   vorpal.command 'file [path]'
-    .description 'sets the file to which todos saves all data,
-      or prints the current savefile if no argument is given'
+    .description 'set or print the savefile'
     .option '-s, --save', 'immediately save to that file'
     .action (args, cb) ->
       if args.path?
