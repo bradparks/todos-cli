@@ -335,6 +335,13 @@ module.exports = (vorpal, controller, program, foundFile) ->
 
       cb()
 
+  vorpal.command 'pwd'
+    .description 'print the current working todo'
+    .alias 'pwt'
+    .action (args, cb) ->
+      @.log controller.getCwtPath()
+      cb()
+
   vorpal.command 'save [path]'
     .description 'save to either the current savefile, or to path'
     .action (args, cb) ->

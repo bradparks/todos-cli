@@ -129,10 +129,6 @@ Options:
   -r, --relative  add index to the current index
 ```
 - - -
-### View Todos ###
-- ls (filter rows, filter columns, render markdown)
-- show dependencies
-- show dependents
 
 ### Setting values ###
 
@@ -255,9 +251,28 @@ Options:
   -r, --relative  add index to the current index
 ```
 - - -
+### View Todos ###
+- ls (filter rows, filter columns, render markdown)
+- show dependencies
+- show dependents
+
 ### Navigation ###
 
-- pwd
+- - -
+
+#### Print Current Working Todo ####
+`pwd [options]`
+
+Alias: `pwt`
+
+Print the current working todo (cwt).
+
+Options:
+```
+  --help  output usage information
+```
+- - -
+
 - cd
 
 ### Persistence ###
