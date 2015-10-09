@@ -1,6 +1,6 @@
 # Todos CLI #
 
-Command line interface for managing hierarchical todo lists.
+Command line interface for managing hierarchical todo lists. Based on [todos-js](https://github.com/AljoschaMeyer/todos-js).
 
 ## Features: ##
 - pretty awesome cli
@@ -60,7 +60,19 @@ The commands for navigating the todo tree are analogues to the usual terminal co
 
 ## Usage ##
 
-Run `todos` to start an [immersive session](https://github.com/dthree/vorpal#what-is-an-immersive-cli-app) with the following commands:
+Run `todos` to start an [immersive session](https://github.com/dthree/vorpal#what-is-an-immersive-cli-app).
+
+```js
+.description 'An application for managing hierarchical todo lists'
+.option '-f, --file <path>', 'path to file to read from and to save to'
+.option '-w, --working-todo <todo>',
+  'starting current working todo (cwt), see help -cwt'
+.option '-a, --autosave <boolean>', 'use autosave, defaults to true'
+.option '-n, --no-welcome', 'do not output anything on startup'
+.option '-m, --markdown', 'render descriptions as markdown, defaults to true'
+```
+
+The immersive session offers the following commands:
 
 ### Manipulating Todos ###
 
@@ -336,8 +348,20 @@ Options:
 - - -
 
 ### Miscellaneous ###
-- help
+
 - tour
+
+#### Help ####
+
+`help [options] [command]`
+
+Provides help for a given command.
+Useful for getting a quick overview of arguments and options.
+
+Options:
+```
+  --help  output usage information
+```
 
 - - -
 
@@ -358,8 +382,6 @@ Just write ` | less` behind a command to view the output in less mode.
 Run `less --help` for more information on how to use vorpal-less.
 
 - - -
-
-- arguments and options for running todos TODO: move to top of usage section
 
 ## Stuff to implement before first release ##
 
