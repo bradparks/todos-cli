@@ -224,7 +224,21 @@ Options:
   -i, --index  the index at which to add the dependency
 ```
 - - -
-- removeDependency
+#### Removing Dependencies ####
+
+`rd [options] [todo] <dependency>`
+
+Alias: `removeDependency`
+
+Remove a dependency for the given todo (or the current working directory if none is specified).
+
+
+Options:
+```
+  --help  output usage information
+```
+- - -
+
 - moveDependencyToIndex
 
 ### Navigation ###

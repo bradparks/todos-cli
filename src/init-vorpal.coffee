@@ -243,6 +243,15 @@ module.exports = (vorpal, controller, program, foundFile) ->
         error 'Invalid dependency: circular, or on child or ancestor'
       cb()
 
+  vorpal.command 'rd [todo] <dependency>'
+    .description 'remove a dependency'
+    .alias 'removeDependency'
+    .action (args, cb) ->
+      node = controller.resolvePath args.todo
+      dep = controller.resolvePath args.dependency
+      controller.removeDependency node, dep
+      cb()
+
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
       or prints the current savefile if no argument is given'
