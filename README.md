@@ -305,8 +305,20 @@ Options:
 ```
 - - -
 
+#### Save to File ####
+`save [options] [path]`
+
+Save to the given path, or to the current savefil if no path is given.
+
+Does not change the target of further saves, use `file` for that.
+
+Options:
+```
+  --help  output usage information
+```
+- - -
+
 - autosave
-- save
 
 ### Miscellaneous ###
 - help
