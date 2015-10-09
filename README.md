@@ -135,7 +135,28 @@ Options:
 
 ### Setting values ###
 
-- setName
+- - -
+
+#### Set Name ####
+
+`sn [options] [todo] <name>`
+
+Alias: `setName` | `rn` | `rename`
+
+Set the name of a given todo (or the current working todo if none is specified).
+
+Fails if a sibling already has that name.
+
+Does not allow renaming the root.
+
+`/` and `\` in the name will be escaped.
+To address a todo with these characters, write `\/` or `\\` respectively.
+
+Options:
+```
+  --help  output usage information
+```
+- - -
 - setDescription
 - setStatus
 - addDependency

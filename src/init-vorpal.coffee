@@ -163,6 +163,26 @@ module.exports = (vorpal, controller, program, foundFile) ->
       finally
         cb()
 
+  vorpal.command 'sn [todo] <name>'
+    .description 'change the name to the given name'
+    .alias 'setName'
+    .alias 'rn'
+    .alias 'rename'
+    .action (args, cb) ->
+      node = controller.resolvePath args.todo
+      if node is controller.root
+        error 'Can not rename the root.'
+        return cb()
+
+      try
+        controller.setName node, Path.escape args.name
+      catch err
+        switch err.message
+          when 'Operation would have resulted in siblings with the same name.'
+            error 'Name already taken by a sibling.'
+      vorpal.updateDelimiter()
+      cb()
+
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
       or prints the current savefile if no argument is given'
@@ -230,15 +250,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
         @.log "#{prefix}#{node.model.done}"
         @.log "#{prefix}#{node.model.dependencies}"
 
-      cb()
-
-  vorpal.command 'rn <name> [todo]'
-    .description 'change the name to the given name'
-    .alias 'rename'
-    .alias 'setName'
-    .action (args, cb) ->
-      controller.setName controller.resolvePath(args.todo), Path.escape args.name
-      vorpal.updateDelimiter()
       cb()
 
   vorpal.command 'sd <description> [todo]'
