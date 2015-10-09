@@ -163,25 +163,37 @@ module.exports = (vorpal, controller, program, foundFile) ->
       finally
         cb()
 
-  vorpal.command 'sn [todo] <name>'
+  vorpal.command 'sn [todo] [name]'
     .description 'set the name to the given name'
     .alias 'setName'
     .alias 'rn'
     .alias 'rename'
     .action (args, cb) ->
+      setName = (name) ->
+        try
+          controller.setName node, Path.escape name
+        catch err
+          switch err.message
+            when 'Operation would have resulted in siblings with the same name.'
+              error 'Name already taken by a sibling.'
+        vorpal.updateDelimiter()
+        cb()
+
       node = controller.resolvePath args.todo
       if node is controller.root
         error 'Can not rename the root.'
         return cb()
 
-      try
-        controller.setName node, Path.escape args.name
-      catch err
-        switch err.message
-          when 'Operation would have resulted in siblings with the same name.'
-            error 'Name already taken by a sibling.'
-      vorpal.updateDelimiter()
-      cb()
+      if args.name?
+        setName args.name
+      else
+        question =
+          name: 'name'
+          message: 'Enter new name: '
+          default: ''
+
+        @.prompt question, (answer) ->
+          setName(answer.name)
 
   vorpal.command 'sd [todo] [description]'
     .description 'set the description to the given text'

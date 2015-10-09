@@ -145,6 +145,8 @@ Alias: `setName` | `rn` | `rename`
 
 Set the name of a given todo (or the current working todo if none is specified).
 
+Prompts for name if none is given.
+
 Fails if a sibling already has that name.
 
 Does not allow renaming the root.
