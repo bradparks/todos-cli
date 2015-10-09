@@ -226,6 +226,23 @@ module.exports = (vorpal, controller, program, foundFile) ->
       controller.setDone controller.resolvePath(args.todo), false
       cb()
 
+  vorpal.command 'ad [todo] <dependency>'
+    .description 'add a dependency'
+    .alias 'addDependency'
+    .option '-i, --index', 'the index at which to add the dependency'
+    .action (args, cb) ->
+      node = controller.resolvePath args.todo
+      dep = controller.resolvePath args.dependency
+
+      unless dep?
+        error "#{args.dependency} is not a valid path to a todo"
+        return cb()
+
+      result = controller.addDependencyAtIndex node, dep, args.options.index
+      if result is null
+        error 'Invalid dependency: circular, or on child or ancestor'
+      cb()
+
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
       or prints the current savefile if no argument is given'

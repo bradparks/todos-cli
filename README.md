@@ -202,10 +202,28 @@ Options:
 ```
   --help  output usage information
 ```
-
 - - -
 
-- addDependency
+#### Adding Dependencies ####
+
+`ad [options] [todo] <dependency>`
+
+Alias: `addDependency`
+
+Adds a todo as a dependency for the given todo (or the current working directory if none is specified).
+
+The new dependency is added as the last one, unless an index is specified via the `-i` option.
+
+Does not allow dependency on ancestors, dependencies on children, or circular dependencies.
+
+May change the status of related todos, because a done dependent may not have pending dependencies
+
+Options:
+```
+  --help       output usage information
+  -i, --index  the index at which to add the dependency
+```
+- - -
 - removeDependency
 - moveDependencyToIndex
 
