@@ -272,8 +272,18 @@ Options:
   --help  output usage information
 ```
 - - -
+#### Change Current Working Todo
 
-- cd
+`cd [options] [todo]`
+
+Alias: `ct`
+
+Change the current working todo (cwt). If no todo is given, changes to the root.
+
+Options:
+```
+  --help  output usage information
+```
 
 ### Persistence ###
 - autosave

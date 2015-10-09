@@ -321,6 +321,26 @@ module.exports = (vorpal, controller, program, foundFile) ->
       finally
         cb()
 
+  vorpal.command 'pwd'
+    .description 'print the current working todo'
+    .alias 'pwt'
+    .action (args, cb) ->
+      @.log controller.getCwtPath()
+      cb()
+
+  vorpal.command 'cd [todo]'
+    .description 'change current working todo'
+    .alias 'ct'
+    .action (args, cb) ->
+      args.todo = '/' unless args.todo?
+
+      unless (controller.changeWorkingTodo args.todo)?
+        error "#{args.todo} is not a valid path to a todo"
+
+      vorpal.updateDelimiter()
+
+      cb()
+
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
       or prints the current savefile if no argument is given'
@@ -333,13 +353,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
 
       controller.save() if args.save?
 
-      cb()
-
-  vorpal.command 'pwd'
-    .description 'print the current working todo'
-    .alias 'pwt'
-    .action (args, cb) ->
-      @.log controller.getCwtPath()
       cb()
 
   vorpal.command 'save [path]'
@@ -355,19 +368,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
         controller.autosave = args.boolean
       else
         @.log controller.autosave
-
-      cb()
-
-  vorpal.command 'cd [todo]'
-    .description 'Change the current working todo to the given one, or to `/` if nothing was passed. Works just like cd in a normal shell, including absolute/relative paths and `.` and `..`'
-    .alias 'ct'
-    .action (args, cb) ->
-      args.todo = '/' unless args.todo?
-
-      unless (controller.changeWorkingTodo args.todo)?
-        @.log "#{args.todo} is not a valid todo. See help --cwt"
-
-      vorpal.updateDelimiter()
 
       cb()
 
