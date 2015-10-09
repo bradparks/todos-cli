@@ -252,6 +252,29 @@ module.exports = (vorpal, controller, program, foundFile) ->
       controller.removeDependency node, dep
       cb()
 
+  vorpal.command 'md [todo] <dependency> <index>'
+    .alias 'moveDependency'
+    .description 'move a dependency among its siblings'
+    .option '-r, --relative', 'add index to the current index'
+    .action (args, cb) ->
+      node = controller.resolvePath args.todo
+      dep = controller.resolvePath args.dependency
+
+      index = args.index
+      index += node.model.dependencies.indexOf(Path.renderPath dep) if args.options.relative?
+
+      try
+        controller.moveDependencyToIndex node, dep, index
+      catch err
+        switch err.message
+          when 'Invalid index.'
+            error 'Index must be between zero and the number of siblings of the dependency.'
+          else
+            error err
+            error err.message
+      finally
+        cb()
+
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
       or prints the current savefile if no argument is given'

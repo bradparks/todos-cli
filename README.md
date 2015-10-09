@@ -120,6 +120,7 @@ Options:
 Alias: `move`
 
 Move a given todo (or the current working todo if none is specified) to a new place among its siblings.
+
 With the `-r` flag, the index is given relative to the current position.
 
 Options:
@@ -238,9 +239,22 @@ Options:
   --help  output usage information
 ```
 - - -
+#### Moving Dependencies ####
 
-- moveDependencyToIndex
+`md [options] [todo] <dependency> <index>`
 
+Alias: `moveDependency`
+
+Move a dependency for a given todo (or the current working todo if none is specified) to a new place among its siblings.
+
+With the `-r` flag, the index is given relative to the current position.
+
+Options:
+```
+  --help          output usage information
+  -r, --relative  add index to the current index
+```
+- - -
 ### Navigation ###
 
 - pwd
