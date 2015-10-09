@@ -358,13 +358,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
 
       cb()
 
-  vorpal.command 'pwd'
-    .description 'Print the current working todo (cwt). See help --cwt for further information on the cwt.'
-    .alias 'pwt'
-    .action (args, cb) ->
-      @.log controller.getCwtPath()
-      cb()
-
   vorpal.command 'cd [todo]'
     .description 'Change the current working todo to the given one, or to `/` if nothing was passed. Works just like cd in a normal shell, including absolute/relative paths and `.` and `..`'
     .alias 'ct'
