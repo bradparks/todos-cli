@@ -137,6 +137,32 @@ module.exports = (vorpal, controller, program, foundFile) ->
           vorpal.updateDelimiter()
           cb()
 
+  vorpal.command 'mv [todo] <index>'
+    .alias 'move'
+    .description 'move a todo among its siblings'
+    .option '-r, --relative', 'add index to the current index'
+    .action (args, cb) ->
+      node = controller.resolvePath args.todo
+
+      if node is controller.root
+        error 'Can not move the root.'
+        return cb()
+
+      index = args.index
+      index += node.parent.children.indexOf node if args.options.relative?
+
+      try
+        controller.moveChildToIndex node, index
+      catch err
+        switch err.message
+          when 'Invalid index.'
+            error 'Index must be between zero and the number of siblings of the todo.'
+          else
+            error err
+            error err.message
+      finally
+        cb()
+
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
       or prints the current savefile if no argument is given'
@@ -204,12 +230,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
         @.log "#{prefix}#{node.model.done}"
         @.log "#{prefix}#{node.model.dependencies}"
 
-      cb()
-
-  vorpal.command 'mv <index> [todo]'
-    .description 'move a todo to the given index among its siblings'
-    .action (args, cb) ->
-      controller.moveChildToIndex controller.resolvePath(args.todo), args.index
       cb()
 
   vorpal.command 'rn <name> [todo]'

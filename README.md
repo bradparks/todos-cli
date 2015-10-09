@@ -113,12 +113,21 @@ Options:
 ```
 - - -
 
-- move
-- copy
-- setIndex
-- moveUp
-- moveDown
+#### Moving Todos ####
 
+`mv [options] [todo] <index>`
+
+Alias: `move`
+
+Move a given todo (or the current working todo if none is specified) to a new place among its siblings.
+With the `-r` flag, the index is given relative to the current position.
+
+Options:
+```
+  --help          output usage information
+  -r, --relative  add index to the current index
+```
+- - -
 ### View Todos ###
 - ls (filter rows, filter columns, render markdown)
 - show dependencies
@@ -145,6 +154,7 @@ Options:
 
 ### Miscellaneous ###
 - help
+- tour
 
 - - -
 
@@ -161,12 +171,12 @@ Show the readme.md for the module in the terminal.
 ` | less`
 
 todos-cli comes with the [vorpal-less](https://github.com/vorpaljs/vorpal-less) extension.
-Just write ' | less' behind a command to view the output in less mode.
-Run less --help for more information on how to use vorpal-less.
+Just write ` | less` behind a command to view the output in less mode.
+Run `less --help` for more information on how to use vorpal-less.
 
 - - -
 
-- arguments and options for running todos
+- arguments and options for running todos TODO: move to top of usage section
 
 ## Stuff to implement before first release ##
 
@@ -179,3 +189,4 @@ Run less --help for more information on how to use vorpal-less.
 - TODO render descriptions as md
 - TODO add --preserve-root to rm
 - TODO allow mk to create necessary parents
+- TODO implement tour
