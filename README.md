@@ -157,6 +157,25 @@ Options:
   --help  output usage information
 ```
 - - -
+
+#### Set Description ####
+
+`sd [options] [todo] [description]`
+
+Alias: `setDescription`
+
+Set the description of a given todo (or the current working todo if none is specified).
+
+Prompts for description if none is given.
+
+Descriptions are rendered as [markdown](https://daringfireball.net/projects/markdown/).
+
+Options:
+```
+  --help  output usage information
+```
+- - -
+
 - setDescription
 - setStatus
 - addDependency

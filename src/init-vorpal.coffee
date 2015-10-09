@@ -164,7 +164,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
         cb()
 
   vorpal.command 'sn [todo] <name>'
-    .description 'change the name to the given name'
+    .description 'set the name to the given name'
     .alias 'setName'
     .alias 'rn'
     .alias 'rename'
@@ -182,6 +182,25 @@ module.exports = (vorpal, controller, program, foundFile) ->
             error 'Name already taken by a sibling.'
       vorpal.updateDelimiter()
       cb()
+
+  vorpal.command 'sd [todo] [description]'
+    .description 'set the description to the given text'
+    .alias 'setDescription'
+    .action (args, cb) ->
+      node = controller.resolvePath args.todo
+
+      if args.description?
+        controller.setDescription node, args.description
+        return cb()
+      else
+        question =
+          name: 'description'
+          message: 'Enter new description: '
+          default: ''
+
+        @.prompt question, (answer) ->
+          controller.setDescription node, answer.description
+          return cb()
 
   vorpal.command 'file [path]'
     .description 'sets the file to which todos saves all data,
@@ -250,13 +269,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
         @.log "#{prefix}#{node.model.done}"
         @.log "#{prefix}#{node.model.dependencies}"
 
-      cb()
-
-  vorpal.command 'sd <description> [todo]'
-    .description 'change the description to the given description'
-    .alias 'setDescription'
-    .action (args, cb) ->
-      controller.setDescription controller.resolvePath(args.todo), args.description
       cb()
 
   vorpal.command 'setdone <boolean> [todo]'
