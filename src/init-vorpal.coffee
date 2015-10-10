@@ -1,9 +1,12 @@
+tour = require './tour'
+
 Todo = require '../../todos-js/lib/todo'
 Path = require '../../todos-js/lib/path'
 
 marked = require 'marked'
 TerminalRenderer = require 'marked-terminal'
 less = require 'vorpal-less'
+vorpalTour = require 'vorpal-tour'
 parseInt = require 'parse-int'
 chalk = require 'chalk'
 
@@ -393,18 +396,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
 
       cb()
 
-  vorpal.command 'setdone <boolean> [todo]'
-    .description 'change done to the given boolean'
-    .action (args, cb) ->
-      done = false
-      if args.boolean is 'true'
-        done = true
-      if args.boolean is '1'
-        done = true
-
-      controller.setDone controller.resolvePath(args.todo), done
-      cb()
-
   vorpal.command 'man'
     .description 'show the usage manual for todos-cli'
     .action (args, cb) ->
@@ -420,7 +411,9 @@ module.exports = (vorpal, controller, program, foundFile) ->
 
   marked.setOptions {renderer: new TerminalRenderer()}
 
-  vorpal.use(less)
+  vorpal.use less
+  .use vorpalTour, {command: 'tour', tour: tour}
+  .use(require('../../vorpal-log/index'))
   .updateDelimiter()
   .show()
 
@@ -431,4 +424,4 @@ module.exports = (vorpal, controller, program, foundFile) ->
       vorpal.session.log ''
       vorpal.session.log marked '# Welcome to todos-cli #'
       vorpal.session.log ''
-      vorpal.session.log marked 'Run `help` for a quick overview of all available commands.\nOr type `man | less` for an explanation of the core concepts.'
+      vorpal.session.log marked 'Why don\'t you run `tour` for a quick introduction to what this little program can do?\nOr type `man | less` for a long and boring readme.'

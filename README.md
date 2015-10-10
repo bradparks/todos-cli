@@ -2,6 +2,12 @@
 
 Command line interface for managing hierarchical todo lists. Based on [todos-js](https://github.com/AljoschaMeyer/todos-js).
 
+## Getting Started ##
+
+- Install via npm: `npm install -g todos-cli`
+- Run `todos` to launch a session
+- Start an interactive tour via `tour`
+
 ## Features: ##
 - pretty awesome cli
 - each todo has a name, a description and a status (pending or done)
