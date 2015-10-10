@@ -3,12 +3,10 @@ tour = require './tour'
 Todo = require '../../todos-js/lib/todo'
 Path = require '../../todos-js/lib/path'
 
-marked = require 'marked'
-TerminalRenderer = require 'marked-terminal'
 less = require 'vorpal-less'
+vorpalLog = require 'vorpal-log'
 vorpalTour = require 'vorpal-tour'
 parseInt = require 'parse-int'
-chalk = require 'chalk'
 
 fs = require 'fs'
 
@@ -24,12 +22,6 @@ module.exports = (vorpal, controller, program, foundFile) ->
 
     return @delimiter "[todos #{cwtDisplayName}]"
 
-  error = (msg) ->
-    vorpal.session.log chalk.red msg
-
-  warn = (msg) ->
-    vorpal.session.log chalk.yellow msg
-
   vorpal.command 'mk <name> [todo]'
     .description 'make a new todo, as child of [todo]'
     .alias 'add'
@@ -43,10 +35,10 @@ module.exports = (vorpal, controller, program, foundFile) ->
       if args.options.index?
         index = parseInt args.options.index
         unless index?
-          error "#{args.options.index} is not an integer"
+          logger.error "#{args.options.index} is not an integer"
           return cb()
         if index < 0
-          error "#{index} may not be below zero"
+          logger.error "#{index} may not be below zero"
           return cb()
 
       name = Path.escape args.name
@@ -60,12 +52,12 @@ module.exports = (vorpal, controller, program, foundFile) ->
         catch err
           switch err.message
             when 'Invalid index.'
-              error 'Index must be between zero and the number of siblings of the todo.'
+              logger.error 'Index must be between zero and the number of siblings of the todo.'
             when 'Operation would have resulted in siblings with the same name.'
-              error 'The name must be unique among the todo\'s siblings.'
+              logger.error 'The name must be unique among the todo\'s siblings.'
             else
-              error err
-              error err.message
+              logger.error err
+              logger.error err.message
         finally
           cb()
 
@@ -96,7 +88,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
           if node?
             todos.push node
           else
-            warn "skipping #{t}, that is not a valid path to a todo"
+            logger.warn "skipping #{t}, that is not a valid path to a todo"
 
       todos.push controller.cwt if todos.length is 0 and not args.todos?
 
@@ -148,11 +140,11 @@ module.exports = (vorpal, controller, program, foundFile) ->
       node = controller.resolvePath args.todo
 
       unless node?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
         return cb()
 
       if node is controller.root
-        error 'Can not move the root.'
+        logger.error 'Can not move the root.'
         return cb()
 
       index = args.index
@@ -163,10 +155,10 @@ module.exports = (vorpal, controller, program, foundFile) ->
       catch err
         switch err.message
           when 'Invalid index.'
-            error 'Index must be between zero and the number of siblings of the todo.'
+            logger.error 'Index must be between zero and the number of siblings of the todo.'
           else
-            error err
-            error err.message
+            logger.error err
+            logger.error err.message
       finally
         cb()
 
@@ -182,14 +174,14 @@ module.exports = (vorpal, controller, program, foundFile) ->
         catch err
           switch err.message
             when 'Operation would have resulted in siblings with the same name.'
-              error 'Name already taken by a sibling.'
+              logger.error 'Name already taken by a sibling.'
         vorpal.updateDelimiter()
         cb()
 
       node = controller.resolvePath args.todo
 
       unless node?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
         return cb()
 
       if node is controller.root
@@ -214,7 +206,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
       node = controller.resolvePath args.todo
 
       unless node?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
         return cb()
 
       if args.description?
@@ -236,7 +228,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
       node = controller.resolvePath args.todo
 
       unless node?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
         return cb()
 
       controller.setDone node, true
@@ -248,7 +240,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
       node = controller.resolvePath args.todo
 
       unless node?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
         return cb()
 
       controller.setDone node, false
@@ -263,16 +255,16 @@ module.exports = (vorpal, controller, program, foundFile) ->
       dep = controller.resolvePath args.dependency
 
       unless node?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
         return cb()
 
       unless dep?
-        error "#{args.dependency} is not a valid path to a todo"
+        logger.error "#{args.dependency} is not a valid path to a todo"
         return cb()
 
       result = controller.addDependencyAtIndex node, dep, args.options.index
       if result is null
-        error 'Invalid dependency: circular, or on child or ancestor'
+        logger.error 'Invalid dependency: circular, or on child or ancestor'
       cb()
 
   vorpal.command 'rd [todo] <dependency>'
@@ -283,11 +275,11 @@ module.exports = (vorpal, controller, program, foundFile) ->
       dep = controller.resolvePath args.dependency
 
       unless node?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
         return cb()
 
       unless dep?
-        error "#{args.dependency} is not a valid path to a todo"
+        logger.error "#{args.dependency} is not a valid path to a todo"
         return cb()
 
       controller.removeDependency node, dep
@@ -302,11 +294,11 @@ module.exports = (vorpal, controller, program, foundFile) ->
       dep = controller.resolvePath args.dependency
 
       unless node?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
         return cb()
 
       unless dep?
-        error "#{args.dependency} is not a valid path to a todo"
+        logger.error "#{args.dependency} is not a valid path to a todo"
         return cb()
 
       index = args.index
@@ -317,10 +309,10 @@ module.exports = (vorpal, controller, program, foundFile) ->
       catch err
         switch err.message
           when 'Invalid index.'
-            error 'Index must be between zero and the number of siblings of the dependency.'
+            logger.error 'Index must be between zero and the number of siblings of the dependency.'
           else
-            error err
-            error err.message
+            logger.error err
+            logger.error err.message
       finally
         cb()
 
@@ -328,7 +320,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
     .description 'print the current working todo'
     .alias 'pwt'
     .action (args, cb) ->
-      @.log controller.getCwtPath()
+      logger.log controller.getCwtPath()
       cb()
 
   vorpal.command 'cd [todo]'
@@ -338,7 +330,7 @@ module.exports = (vorpal, controller, program, foundFile) ->
       args.todo = '/' unless args.todo?
 
       unless (controller.changeWorkingTodo args.todo)?
-        error "#{args.todo} is not a valid path to a todo"
+        logger.error "#{args.todo} is not a valid path to a todo"
 
       vorpal.updateDelimiter()
 
@@ -350,17 +342,20 @@ module.exports = (vorpal, controller, program, foundFile) ->
     .action (args, cb) ->
       if args.path?
         controller.file = args.path
+        logger.confirm "set savefile to #{args.path}"
       else
-        @.log controller.file
+        logger.log controller.file
 
-      controller.save() if args.save?
+      if args.options.save?
+        vorpal.exec 'save'
 
       cb()
 
   vorpal.command 'save [path]'
     .description 'save to either the current savefile, or to path'
     .action (args, cb) ->
-      controller.save(args.path)
+      controller.save args.path
+      logger.confirm "saved to #{args.path ? controller.file}"
       cb()
 
   vorpal.command 'autosave [boolean]'
@@ -372,8 +367,9 @@ module.exports = (vorpal, controller, program, foundFile) ->
       newValue = false if args.options.off?
       if newValue?
         controller.autosave = newValue
-
-      @.log controller.autosave
+        logger.confirm "set autosave to #{newValue}"
+      else
+        logger.log controller.autosave
 
       cb()
 
@@ -389,39 +385,37 @@ module.exports = (vorpal, controller, program, foundFile) ->
         for i in [0..node.getPath().length]
           prefix = "#{prefix}  "
 
-        @.log "#{prefix}#{Path.deescape node.model.name}"
-        @.log "#{prefix}#{node.model.description}"
-        @.log "#{prefix}#{node.model.done}"
-        @.log "#{prefix}#{node.model.dependencies}"
+        logger.log "#{prefix}#{Path.deescape node.model.name}"
+        logger.log "#{prefix}#{node.model.description}"
+        logger.log "#{prefix}#{node.model.done}"
+        logger.log "#{prefix}#{node.model.dependencies}"
 
       cb()
 
   vorpal.command 'man'
     .description 'show the usage manual for todos-cli'
     .action (args, cb) ->
-      output = ''
-
       try
-        @.log marked fs.readFileSync("#{__dirname}/../README.md").toString()
+        @.log fs.readFileSync("#{__dirname}/../README.md").toString()
       catch error
-        @.log "Could not find README.md at #{__dirname}/../README.md"
-        @.log error
+        logger.error "Could not find README.md at #{__dirname}/../README.md"
+        logger.error error
 
       cb()
 
-  marked.setOptions {renderer: new TerminalRenderer()}
-
   vorpal.use less
+  .use vorpalLog, {markdown: true}
   .use vorpalTour, {command: 'tour', tour: tour}
-  .use(require('../../vorpal-log/index'))
   .updateDelimiter()
   .show()
+
+  logger = vorpal.logger
 
   unless program.noWelcome
     if foundFile
       vorpal.exec 'ls'
     else
-      vorpal.session.log ''
-      vorpal.session.log marked '# Welcome to todos-cli #'
-      vorpal.session.log ''
-      vorpal.session.log marked 'Why don\'t you run `tour` for a quick introduction to what this little program can do?\nOr type `man | less` for a long and boring readme.'
+      logger.log '# Welcome to todos-cli'
+      logger.log ''
+      logger.log 'Why don\'t you run `tour` for a quick introduction to what this little program can do?\nOr type `man | less` for a long and boring readme.'
+      logger.log ''

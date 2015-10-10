@@ -27,13 +27,12 @@
   },
   "homepage": "https://github.com/AljoschaMeyer/todos-js#readme",
   "dependencies": {
-    "chalk": "^1.1.1",
     "commander": "^2.8.1",
-    "marked": "^0.3.5",
-    "marked-terminal": "^1.6.1",
     "parse-int": "^1.0.0",
     "vorpal": "^1.1.10",
-    "vorpal-less": "0.0.10"
+    "vorpal-less": "0.0.10",
+    "vorpal-log": "0.0.3",
+    "vorpal-tour": "0.0.3"
   },
   "devDependencies": {
     "coffee-script": "^1.10.0"
